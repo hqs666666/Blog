@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{3C9140A2-0388-420F-AE6F-55765C269DC5}"
 EndProject
@@ -15,25 +15,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository", "Repository", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{4B89FB1D-AF69-434A-B9C7-D9A2BE88D829}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.IService", "Application\Blog.IService\Blog.IService.csproj", "{2A62EF9A-EA2E-4B45-8747-D8CDF4470659}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.IService", "Application\Blog.IService\Blog.IService.csproj", "{2A62EF9A-EA2E-4B45-8747-D8CDF4470659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Service", "Application\Blog.Service\Blog.Service.csproj", "{63A66803-5728-43AF-93E1-E8061906B83E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Service", "Application\Blog.Service\Blog.Service.csproj", "{63A66803-5728-43AF-93E1-E8061906B83E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Dto", "Entity\Blog.Dto\Blog.Dto.csproj", "{DE3174F6-6593-4B15-B9BA-54D2A2BAE8BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Dto", "Entity\Blog.Dto\Blog.Dto.csproj", "{DE3174F6-6593-4B15-B9BA-54D2A2BAE8BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Entity", "Entity\Blog.Entity\Blog.Entity.csproj", "{8D438511-02D0-40D5-8F8F-F0F49A09E577}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Entity", "Entity\Blog.Entity\Blog.Entity.csproj", "{8D438511-02D0-40D5-8F8F-F0F49A09E577}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.AutoMapperConfig", "Infrastructure\Blog.AutoMapperConfig\Blog.AutoMapperConfig.csproj", "{4AEE0EA3-5833-4389-8A2F-66E3CD21CDE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.AutoMapperConfig", "Infrastructure\Blog.AutoMapperConfig\Blog.AutoMapperConfig.csproj", "{4AEE0EA3-5833-4389-8A2F-66E3CD21CDE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Common", "Infrastructure\Blog.Common\Blog.Common.csproj", "{DCF9B0D9-25A5-43E8-A29C-0A42A65FCB0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Common", "Infrastructure\Blog.Common\Blog.Common.csproj", "{DCF9B0D9-25A5-43E8-A29C-0A42A65FCB0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.IRepository", "Repository\Blog.IRepository\Blog.IRepository.csproj", "{0057204D-C864-42B9-BD58-9E24C3BD99EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.IRepository", "Repository\Blog.IRepository\Blog.IRepository.csproj", "{0057204D-C864-42B9-BD58-9E24C3BD99EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Repository", "Repository\Blog.Repository\Blog.Repository.csproj", "{50671239-0A80-49A8-8966-76FEB2826AE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Repository", "Repository\Blog.Repository\Blog.Repository.csproj", "{50671239-0A80-49A8-8966-76FEB2826AE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.WebApi", "Api\Blog.WebApi\Blog.WebApi.csproj", "{8AD9D817-ACAF-4E6F-BBC1-64AA1804B04C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.WebApi", "Api\Blog.WebApi\Blog.WebApi.csproj", "{8AD9D817-ACAF-4E6F-BBC1-64AA1804B04C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorizationCenter", "Microservice\AuthorizationCenter\AuthorizationCenter.csproj", "{4ED25009-7EB2-47D6-889A-36D804CD9E60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizationCenter", "Microservice\AuthorizationCenter\AuthorizationCenter.csproj", "{4ED25009-7EB2-47D6-889A-36D804CD9E60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.ApiFramework", "Api\Blog.ApiFramework\Blog.ApiFramework.csproj", "{0625F051-D472-4945-A8FF-5BFB3EF998DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Jwt", "Infrastructure\Blog.Jwt\Blog.Jwt.csproj", "{966690F3-5B40-403F-B237-259774A8A7EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +85,14 @@ Global
 		{4ED25009-7EB2-47D6-889A-36D804CD9E60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ED25009-7EB2-47D6-889A-36D804CD9E60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4ED25009-7EB2-47D6-889A-36D804CD9E60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0625F051-D472-4945-A8FF-5BFB3EF998DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0625F051-D472-4945-A8FF-5BFB3EF998DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0625F051-D472-4945-A8FF-5BFB3EF998DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0625F051-D472-4945-A8FF-5BFB3EF998DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{966690F3-5B40-403F-B237-259774A8A7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{966690F3-5B40-403F-B237-259774A8A7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{966690F3-5B40-403F-B237-259774A8A7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{966690F3-5B40-403F-B237-259774A8A7EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +108,8 @@ Global
 		{50671239-0A80-49A8-8966-76FEB2826AE2} = {40265814-BAA2-4DAA-A845-9244277DB8E2}
 		{8AD9D817-ACAF-4E6F-BBC1-64AA1804B04C} = {4B89FB1D-AF69-434A-B9C7-D9A2BE88D829}
 		{4ED25009-7EB2-47D6-889A-36D804CD9E60} = {D7F623F6-1F96-40CA-ABEA-AB3CE4C92E8D}
+		{0625F051-D472-4945-A8FF-5BFB3EF998DB} = {4B89FB1D-AF69-434A-B9C7-D9A2BE88D829}
+		{966690F3-5B40-403F-B237-259774A8A7EA} = {3661173E-3ABF-4796-BA43-5E638ED63033}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDBF20A7-7BC6-467A-83EF-3AE56F67EC12}

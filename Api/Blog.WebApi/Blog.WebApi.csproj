@@ -6,8 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.3" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\Blog.Service\Blog.Service.csproj" />
+    <ProjectReference Include="..\..\Entity\Blog.Dto\Blog.Dto.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Blog.Jwt\Blog.Jwt.csproj" />
+    <ProjectReference Include="..\Blog.ApiFramework\Blog.ApiFramework.csproj" />
   </ItemGroup>
 
 </Project>
