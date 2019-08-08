@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Principal;
+using Blog.Jwt.Dtos;
+using Dapper;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
 namespace Blog.Jwt.AuthHelper.Authentication
@@ -47,11 +49,26 @@ namespace Blog.Jwt.AuthHelper.Authentication
             {
                 throw new ArgumentNullException(nameof(JwtIssuerOptions.JtiGenerator));
             }
+
+            if (string.IsNullOrEmpty(options.ConnectionString))
+            {
+                throw new ArgumentNullException(nameof(JwtIssuerOptions.ConnectionString));
+            }
         }
 
-        private static string GenerateRefreshToken()
+        private async Task<string> GenerateRefreshTokenAsync(string sub)
         {
-            return Guid.NewGuid().ToString("N");
+            var token = Guid.NewGuid().ToString("N");
+            using (var conn = new MySqlConnection(_jwtOptions.ConnectionString))
+            {
+                var now = DateTime.Now;
+                var sql = @"insert into `refresh_token`(createTime,CreateBy,Token,UserId,ExpireTime) values(@createTime,@createBy,@token,@userId,@expireTime);";
+                var row = await conn.ExecuteAsync(sql, new { createTime = now, createBy = sub, token = token, userId = sub, expireTime = now.AddDays(7)});
+                if (row < 1)
+                    throw new Exception("refresh token save fail");
+            }
+
+            return token;
         }
 
         #endregion
@@ -60,19 +77,17 @@ namespace Blog.Jwt.AuthHelper.Authentication
         /// 生成Token
         /// </summary>
         /// <param name="sub"></param>
-        /// <param name="identity"></param>
+        /// <param name="customClaims"></param>
         /// <returns></returns>
-        public async Task<string> GenerateEncodedToken(string sub, ClaimsIdentity identity)
+        public async Task<JwtToken> GenerateEncodedTokenAsync(string sub, List<Claim> customClaims)
         {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, sub),
                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
-                identity.FindFirst(ClaimTypes.Name),
-                identity.FindFirst("id")
             };
-            claims.AddRange(identity.FindAll(ClaimTypes.Role));
+            claims.AddRange(customClaims);
 
             // Create the JWT security token and encode it.
             var jwt = new JwtSecurityToken(
@@ -85,44 +100,14 @@ namespace Blog.Jwt.AuthHelper.Authentication
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            var response = new
+            var token = new JwtToken
             {
                 access_token = encodedJwt,
-                refresh_token = GenerateRefreshToken(),
+                refresh_token = await GenerateRefreshTokenAsync(sub),
                 expires_in = (_jwtOptions.ExpireMinutes * 60) -1,
                 token_type = "Bearer"
             };
-
-            return JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented });
-        }
-
-        /// <summary>
-        /// 刷新Token
-        /// </summary>
-        /// <param name="refreshToken"></param>
-        /// <returns></returns>
-        public async Task<string> RefreshToken(string refreshToken)
-        {
-            var sub = "";
-            var identity = GenerateClaimsIdentity(new BaseUser());
-            return await GenerateEncodedToken(sub, identity);
-        }
-
-        /// <summary>
-        /// 生成用户
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public ClaimsIdentity GenerateClaimsIdentity(BaseUser user)
-        {
-            var claimsIdentity = new ClaimsIdentity(new GenericIdentity(user.UserName, "Token"));
-            claimsIdentity.AddClaim(new Claim("id", user.Id.ToString()));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-            foreach (var role in user.Roles)
-            {
-                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-            }
-            return claimsIdentity;
+            return token;
         }
     }
 }

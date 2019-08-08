@@ -43,7 +43,23 @@ namespace Blog.WebApi
                 options.Issuer = Configuration["JwtIssuerOptions:Issuer"];
                 options.Audience = Configuration["JwtIssuerOptions:Audience"];
                 options.ExpireMinutes = int.Parse(Configuration["JwtIssuerOptions:ExpireMinutes"]);
+                options.ConnectionString = Configuration["DbOption:ConnectionString"];
                 options.SigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
+            });
+
+            #endregion
+
+            #region Configure Cors
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("blog-api", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
             });
 
             #endregion
@@ -73,8 +89,9 @@ namespace Blog.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseAuthentication();
+            
+            app.UseCors("blog-api");
+            app.UseJwt();
             app.UseMvc();
         }
     }

@@ -1,6 +1,9 @@
 ﻿using System;
 using Blog.Jwt.AuthHelper.Authentication;
+using Blog.Jwt.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,7 +22,10 @@ namespace Blog.Jwt.AuthHelper.Extension
             var jwtAppSettingOptions = new JwtIssuerOptions();
             services.AddSingleton(jwtAppSettingOptions);
             jwtOptionsAction?.Invoke(jwtAppSettingOptions);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.AddSingleton<IAppTokenService, AppTokenService>();
+            services.AddSingleton<IUserValidatorService, UserValidatorService>();
 
             services.AddAuthentication(options =>
             {
@@ -42,6 +48,11 @@ namespace Blog.Jwt.AuthHelper.Extension
                 };
                 options.SaveToken = true;
             });
+        }
+
+        public static void UseJwt(this IApplicationBuilder builder)
+        {
+            builder.UseAuthentication();
         }
     }
 }

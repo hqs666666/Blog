@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Blog.ApiFramework.Controllers;
-using Blog.Dto.AuthDtos;
 using Blog.IService.Users;
-using Blog.Jwt;
-using Blog.Jwt.AuthHelper.Authentication;
+using Blog.Jwt.Dtos;
+using Blog.Jwt.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.WebApi.Controllers
@@ -15,13 +14,13 @@ namespace Blog.WebApi.Controllers
     {
         #region Ctor
 
-        private readonly IJwtFactory _jwtFactory;
         private readonly IUserService _userService;
+        private readonly IAppTokenService _appTokenService;
 
-        public AuthController(IJwtFactory jwtFactory,
+        public AuthController(IAppTokenService appTokenService,
             IUserService userService)
         {
-            _jwtFactory = jwtFactory;
+            _appTokenService = appTokenService;
             _userService = userService;
         }
 
@@ -30,26 +29,17 @@ namespace Blog.WebApi.Controllers
         [HttpPost("token")]
         public async Task<IActionResult> GetToken([FromBody]RequestTokenDto requestDto)
         {
-            var user = _userService.GetUser(requestDto.UserName, requestDto.Password);
-            if (user == null)
-                return BadRequest("username or password is valid!");
-            
-            var userinfo = new BaseUser
-            {
-                Id = user.Id,
-                UserName = user.Name,
-                Roles = new List<string> { "RegisterUser" }
-            };
-            var claimsIdentity = _jwtFactory.GenerateClaimsIdentity(userinfo);
-            var token = await _jwtFactory.GenerateEncodedToken(user.Id, claimsIdentity);
-            return new OkObjectResult(token);
+            var result = await _appTokenService.GenerateTokenAsync(requestDto);
+            if (!result.Result)
+                return BadRequest(result.Message);
+            return Ok(result.Token);
         }
 
-        [HttpPost("refreshToken")]
-        public async Task<IActionResult> RefreshToken([FromBody]RefreshTokenDto requestDto)
+        [Authorize]
+        [HttpGet("test")]
+        public IActionResult Test()
         {
-            var token = await _jwtFactory.RefreshToken(requestDto.RefreshToken);
-            return new OkObjectResult(token);
+            return Ok("123");
         }
     }
 }

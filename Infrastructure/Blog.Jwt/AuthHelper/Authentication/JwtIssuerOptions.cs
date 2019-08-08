@@ -43,6 +43,8 @@ namespace Blog.Jwt.AuthHelper.Authentication
         /// </summary>
         public TimeSpan ValidFor { get; set; } = TimeSpan.FromMinutes(20);
 
+        public string ConnectionString { get; set; }
+
 
 
         /// <summary>

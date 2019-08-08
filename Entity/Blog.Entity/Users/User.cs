@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog.Entity.Users
 {
@@ -10,5 +11,7 @@ namespace Blog.Entity.Users
         public int Gender { get; set; }
         public string Mobilephone { get; set; }
         public string Email { get; set; }
+        public int UserType { get; set; }
+        public List<Role> Roles { get; set; }
     }
 }

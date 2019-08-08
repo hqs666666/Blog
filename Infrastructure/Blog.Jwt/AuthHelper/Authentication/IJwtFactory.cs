@@ -1,12 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Blog.Jwt.Dtos;
 
 namespace Blog.Jwt.AuthHelper.Authentication
 {
     public interface IJwtFactory
     {
-        Task<string> GenerateEncodedToken(string sub, ClaimsIdentity identity);
-        Task<string> RefreshToken(string refreshToken);
-        ClaimsIdentity GenerateClaimsIdentity(BaseUser user);
+        Task<JwtToken> GenerateEncodedTokenAsync(string sub, List<Claim> customClaims);
     }
 }
