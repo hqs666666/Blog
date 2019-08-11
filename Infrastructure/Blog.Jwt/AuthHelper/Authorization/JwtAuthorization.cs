@@ -1,53 +1,45 @@
 ﻿
-using System.Net;
-using System.Security.Claims;
-using System.Security.Principal;
+using System.IO;
 using System.Threading.Tasks;
-using Blog.Jwt.AuthHelper.Authentication;
 using Blog.Jwt.Dtos;
-using Blog.Jwt.Extensions;
+using Blog.Jwt.Service;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Blog.Jwt.AuthHelper.Authorization
 {
     public class JwtAuthorizationMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IJwtFactory _jwtFactory;
+        private readonly IAppTokenService _appTokenService;
 
-        public JwtAuthorizationMiddleware(RequestDelegate next, IJwtFactory jwtFactory)
+        public JwtAuthorizationMiddleware(RequestDelegate next, IAppTokenService appTokenService)
         {
             _next = next;
-            _jwtFactory = jwtFactory;
+            _appTokenService = appTokenService;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path == "/api/auth/token")
+            if (context.Request.Path == "/oauth/token")
             {
-                await _next(context);
+                if (context.Request.Method != HttpMethods.Post)
+                {
+                    context.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
+                    return;
+                }
+
+                if (context.Request.ContentType != "application/json")
+                {
+                    context.Response.StatusCode = StatusCodes.Status415UnsupportedMediaType;
+                    return;
+                }
+
+                var str = new StreamReader(context.Request.Body).ReadToEnd();
+                var data = JsonConvert.DeserializeObject<RequestTokenDto>(str);
+                await _appTokenService.GenerateTokenAsync(data);
                 return;
             }
-
-            var header = context.Request.Headers["Authorization"].ToString();
-            if (!header.Contains("Bearer"))
-            {
-                await context.Response.WriteJsonAsync(new ErrorResultDto("access_token invalid"), HttpStatusCode.Unauthorized);
-                return;
-            }
-
-            var token = header.Replace("Bearer ", string.Empty);
-            var tokenResult = await _jwtFactory.ParsedTokenAsync(token);
-            if (!tokenResult.Result)
-            {
-                await context.Response.WriteJsonAsync(new ErrorResultDto(tokenResult.Message), HttpStatusCode.Unauthorized);
-                return;
-            }
-
-            IPrincipal pr = new JwtPrincipal("hqs", "123");
-            var id = new JwtIdentity("hqs", true);
-            id.Claims = tokenResult.Claims;
-            context.User = new ClaimsPrincipal(id);
             await _next(context);
         }
     }

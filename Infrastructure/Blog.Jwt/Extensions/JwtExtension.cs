@@ -1,10 +1,9 @@
 ﻿using System;
 using Blog.Jwt.AuthHelper.Authentication;
-using Blog.Jwt.AuthHelper.Authorization;
 using Blog.Jwt.Builder;
 using Blog.Jwt.Service;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -13,11 +12,6 @@ namespace Blog.Jwt.Extensions
 {
     public static class JwtExtension
     {
-        /// <summary>
-        /// 自定义的jwt
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="jwtOptionsAction"></param>
         public static IJwtBuilder AddJwt(this IServiceCollection services,
             Action<JwtIssuerOptions> jwtOptionsAction)
         {
@@ -58,6 +52,13 @@ namespace Blog.Jwt.Extensions
             #endregion
 
             return builder;
+        }
+
+        public static void AddJwtAuthentication(this AuthenticationBuilder builder, Action<JwtIssuerOptions> jwtOptionsAction)
+        {
+            var jwtAppSettingOptions = new JwtIssuerOptions();
+            builder.Services.AddSingleton(jwtAppSettingOptions);
+            jwtOptionsAction?.Invoke(jwtAppSettingOptions);
         }
 
         public static IJwtBuilder AddUserValidation<T>(this IJwtBuilder builder) where T : class, IUserValidatorService

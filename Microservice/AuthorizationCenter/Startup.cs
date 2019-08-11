@@ -21,7 +21,7 @@ namespace AuthorizationCenter
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
             // 配置Jwt
             services.AddJwt(options =>
             {
@@ -29,7 +29,9 @@ namespace AuthorizationCenter
                 options.Issuer = Configuration["JwtIssuerOptions:Issuer"];
                 options.Audience = Configuration["JwtIssuerOptions:Audience"];
                 options.ExpireMinutes = int.Parse(Configuration["JwtIssuerOptions:ExpireMinutes"]);
+                options.ConnectionString = Configuration["DbOption:ConnectionString"];
                 options.SigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
+                options.Secret = Configuration["JwtIssuerOptions:SecretKey"];
             });
         }
 
@@ -41,7 +43,7 @@ namespace AuthorizationCenter
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseAuthentication();
+            app.UseJwtAuthentication();
             app.UseMvc();
         }
     }

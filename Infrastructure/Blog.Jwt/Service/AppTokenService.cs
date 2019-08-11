@@ -18,7 +18,7 @@ namespace Blog.Jwt.Service
         private readonly IJwtFactory _jwtFactory;
         private readonly IUserValidatorService _userValidatorService;
         private readonly JwtIssuerOptions _jwtOptions;
-        private readonly HttpContext _httpContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AppTokenService(IJwtFactory jwtFactory,
             JwtIssuerOptions jwtOptions,
@@ -28,7 +28,7 @@ namespace Blog.Jwt.Service
             _jwtFactory = jwtFactory;
             _jwtOptions = jwtOptions;
             _userValidatorService = userValidatorService;
-            _httpContext = httpContextAccessor.HttpContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         #endregion
@@ -43,7 +43,7 @@ namespace Blog.Jwt.Service
                 var tokenInfo = await conn.QueryFirstOrDefaultAsync<RefreshToken>(sql, new { token, DateTime.Now });
                 if (tokenInfo == null)
                 {
-                    await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("the refresh token is expire"), HttpStatusCode.BadRequest);
+                    await _httpContextAccessor.HttpContext.Response.WriteJsonAsync(new ErrorResultDto("the refresh token is expire"), HttpStatusCode.BadRequest);
                     return;
                 }
 
@@ -51,7 +51,7 @@ namespace Blog.Jwt.Service
                 var user = await conn.QueryFirstOrDefaultAsync<JwtUser>(sql1, new { id = tokenInfo.UserId });
                 if (user == null)
                 {
-                    await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("the refresh token is not found user"), HttpStatusCode.BadRequest);
+                    await _httpContextAccessor.HttpContext.Response.WriteJsonAsync(new ErrorResultDto("the refresh token is not found user"), HttpStatusCode.BadRequest);
                     return;
                 }
 
@@ -68,13 +68,13 @@ namespace Blog.Jwt.Service
             await _userValidatorService.ValidateAsync(context);
             if (!context.Result)
             {
-                await _httpContext.Response.WriteJsonAsync(new ErrorResultDto(context.Message), HttpStatusCode.BadRequest);
+                await _httpContextAccessor.HttpContext.Response.WriteJsonAsync(new ErrorResultDto(context.Message), HttpStatusCode.BadRequest);
                 return;
             }
 
             //var token = await _jwtFactory.GenerateEncodedTokenAsync(context.SubjectId, context.Claims);
             var token = await _jwtFactory.GenerateEncodedTokenForIdentityModelAsync(context.SubjectId, context.Claims);
-            await _httpContext.Response.WriteJsonAsync(token);
+            await _httpContextAccessor.HttpContext.Response.WriteJsonAsync(token);
         }
 
         private async Task<bool> ExistClientAsync(string clientId, string secret)
@@ -93,7 +93,7 @@ namespace Blog.Jwt.Service
         {
             if (!await ExistClientAsync(dto.ClientId, dto.ClientSecret))
             {
-                await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("client is not exist"), HttpStatusCode.BadRequest);
+                await _httpContextAccessor.HttpContext.Response.WriteJsonAsync(new ErrorResultDto("client is not exist"), HttpStatusCode.BadRequest);
                 return;
             }
 
@@ -106,7 +106,7 @@ namespace Blog.Jwt.Service
                     await RefreshTokenAsync(dto.RefreshToken);
                     break;
                 default:
-                    await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("don't support grant type"), HttpStatusCode.BadRequest);
+                    await _httpContextAccessor.HttpContext.Response.WriteJsonAsync(new ErrorResultDto("don't support grant type"), HttpStatusCode.BadRequest);
                     return;
             }
         }

@@ -8,6 +8,7 @@ namespace Blog.Jwt.Extensions
         public static void UseJwtAuthentication(this IApplicationBuilder builder)
         {
             builder.UseMiddleware<JwtAuthorizationMiddleware>();
+            builder.UseAuthentication();
         }
     }
 }
