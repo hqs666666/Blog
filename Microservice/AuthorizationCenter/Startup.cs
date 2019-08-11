@@ -1,4 +1,4 @@
-﻿using Blog.Jwt.AuthHelper.Extension;
+﻿using Blog.Jwt.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

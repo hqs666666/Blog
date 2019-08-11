@@ -5,6 +5,7 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blog.Jwt.AuthHelper.Authentication;
+using Blog.Jwt.Dtos;
 using Blog.Jwt.Models;
 using Dapper;
 using MySql.Data.MySqlClient;
@@ -20,21 +21,28 @@ namespace Blog.Jwt.Service
             _jwtOptions = jwtOptions;
         }
 
-        public async Task<List<Claim>> ValidateAsync(string name, string password)
+        public async Task ValidateAsync(UserValidatorContext context)
         {
             using (var conn = new MySqlConnection(_jwtOptions.ConnectionString))
             {
                 var sql = @"select Id,Name from `user` where Name=@name and Password=@password;";
-                var user = await conn.QueryFirstOrDefaultAsync<JwtUser>(sql,new { name , password });
+                var user = await conn.QueryFirstOrDefaultAsync<JwtUser>(sql,
+                    new { name = context.UserName, password = context.Password });
+
                 if (user == null)
-                    throw new AuthenticationException("username or password is valid!");
+                {
+                    context.CreateErrorResult("username or password is valid!");
+                    return;
+                }
+
 
                 var claims = new List<Claim>
                 {
                     new Claim("id",user.Id),
                     new Claim("name",user.Name)
                 };
-                return claims;
+                context.SubjectId = user.Id;
+                context.Claims = claims;
             }
         }
     }

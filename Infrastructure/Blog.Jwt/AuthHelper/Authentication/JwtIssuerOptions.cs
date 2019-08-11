@@ -60,6 +60,7 @@ namespace Blog.Jwt.AuthHelper.Authentication
             new SigningCredentials(SigningKey, SecurityAlgorithms.HmacSha256);
 
         public SecurityKey SigningKey { get; set; }
+        public string Secret { get; set; }
 
         public int ExpireMinutes { get; set; } = 10;
     }

@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+using System.Net;
 using System.Threading.Tasks;
 using Blog.Jwt.AuthHelper.Authentication;
 using Blog.Jwt.Dtos;
+using Blog.Jwt.Extensions;
 using Blog.Jwt.Models;
 using Dapper;
 using Microsoft.AspNetCore.Http;
@@ -36,36 +35,46 @@ namespace Blog.Jwt.Service
 
         #region Utils
 
-        private async Task<JwtToken> RefreshTokenAsync(string token)
+        private async Task RefreshTokenAsync(string token)
         {
             using (var conn = new MySqlConnection(_jwtOptions.ConnectionString))
             {
                 var sql = @"select * from `refresh_token` where token=@token and expireTime>=@now";
                 var tokenInfo = await conn.QueryFirstOrDefaultAsync<RefreshToken>(sql, new { token, DateTime.Now });
                 if (tokenInfo == null)
-                    throw new Exception("the refresh token is expire");
+                {
+                    await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("the refresh token is expire"), HttpStatusCode.BadRequest);
+                    return;
+                }
 
                 var sql1 = @"select Id, Name from `user` where id=@id";
                 var user = await conn.QueryFirstOrDefaultAsync<JwtUser>(sql1, new { id = tokenInfo.UserId });
                 if (user == null)
-                    throw new Exception("the refresh token is not found user");
-
-                var claims = new List<Claim>
                 {
-                    new Claim("id",user.Id),
-                    new Claim("name",user.Name)
-                };
+                    await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("the refresh token is not found user"), HttpStatusCode.BadRequest);
+                    return;
+                }
 
-                return await _jwtFactory.GenerateEncodedTokenAsync(user.Id, claims);
+                await PasswordAsync(user.Name, user.Password);
             }
         }
 
-        private async Task<JwtToken> PasswordAsync(string name,string password)
+        private async Task PasswordAsync(string name,string password)
         {
-            var claims = await _userValidatorService.ValidateAsync(name, password);
-            var userId = claims.First(p => p.Type == "id").Value;
+            var context = new UserValidatorContext
+            {
+                UserName = name, Password = password
+            };
+            await _userValidatorService.ValidateAsync(context);
+            if (!context.Result)
+            {
+                await _httpContext.Response.WriteJsonAsync(new ErrorResultDto(context.Message), HttpStatusCode.BadRequest);
+                return;
+            }
 
-            return await _jwtFactory.GenerateEncodedTokenAsync(userId, claims);
+            //var token = await _jwtFactory.GenerateEncodedTokenAsync(context.SubjectId, context.Claims);
+            var token = await _jwtFactory.GenerateEncodedTokenForIdentityModelAsync(context.SubjectId, context.Claims);
+            await _httpContext.Response.WriteJsonAsync(token);
         }
 
         private async Task<bool> ExistClientAsync(string clientId, string secret)
@@ -78,35 +87,28 @@ namespace Blog.Jwt.Service
             }
         }
 
-        private JwtTokenContext CreateJwtContext(bool res, JwtToken token, string message = null)
-        {
-            return new JwtTokenContext
-            {
-                Result = res,Token = token,Message = message
-            };
-        }
-
         #endregion
 
-        public async Task<JwtTokenContext> GenerateTokenAsync(RequestTokenDto dto)
+        public async Task GenerateTokenAsync(RequestTokenDto dto)
         {
             if (!await ExistClientAsync(dto.ClientId, dto.ClientSecret))
-                return CreateJwtContext(false, null, "client is not exist");
+            {
+                await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("client is not exist"), HttpStatusCode.BadRequest);
+                return;
+            }
 
-            var context = CreateJwtContext(true, null);
             switch (dto.GrantType)
             {
                 case GrantType.Password:
-                    context.Token = await PasswordAsync(dto.UserName, dto.Password);
+                    await PasswordAsync(dto.UserName, dto.Password);
                     break;
                 case GrantType.RefreshToken:
-                    context.Token = await RefreshTokenAsync(dto.RefreshToken);
+                    await RefreshTokenAsync(dto.RefreshToken);
                     break;
                 default:
-                    return CreateJwtContext(false, null, "don't support grant type");
+                    await _httpContext.Response.WriteJsonAsync(new ErrorResultDto("don't support grant type"), HttpStatusCode.BadRequest);
+                    return;
             }
-
-            return context;
         }
     }
 }

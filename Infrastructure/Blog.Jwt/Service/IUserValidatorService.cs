@@ -1,13 +1,11 @@
 ﻿
-
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using Blog.Jwt.Dtos;
 
 namespace Blog.Jwt.Service
 {
     public interface IUserValidatorService
     {
-        Task<List<Claim>> ValidateAsync(string name, string password);
+        Task ValidateAsync(UserValidatorContext context);
     }
 }

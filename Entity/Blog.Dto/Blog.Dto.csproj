@@ -8,8 +8,4 @@
     <ProjectReference Include="..\..\Infrastructure\Blog.Common\Blog.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="AuthDtos\" />
-  </ItemGroup>
-
 </Project>

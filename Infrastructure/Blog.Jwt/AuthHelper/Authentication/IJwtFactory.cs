@@ -8,5 +8,7 @@ namespace Blog.Jwt.AuthHelper.Authentication
     public interface IJwtFactory
     {
         Task<JwtToken> GenerateEncodedTokenAsync(string sub, List<Claim> customClaims);
+        Task<TokenValidateResult> ParsedTokenAsync(string token);
+        Task<JwtToken> GenerateEncodedTokenForIdentityModelAsync(string sub, List<Claim> customClaims);
     }
 }

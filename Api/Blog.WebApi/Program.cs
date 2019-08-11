@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using NLog.Web;
 
 namespace Blog.WebApi
 {
@@ -12,8 +13,9 @@ namespace Blog.WebApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                   .UseKestrel()
-                   .UseUrls("http://*:5001")
-                   .UseStartup<Startup>();
+                .UseKestrel()
+                .UseUrls("http://*:5001")
+                .UseNLog()
+                .UseStartup<Startup>();
     }
 }

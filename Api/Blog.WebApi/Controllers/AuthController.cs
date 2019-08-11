@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Blog.ApiFramework.Controllers;
-using Blog.IService.Users;
 using Blog.Jwt.Dtos;
 using Blog.Jwt.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -14,32 +14,27 @@ namespace Blog.WebApi.Controllers
     {
         #region Ctor
 
-        private readonly IUserService _userService;
         private readonly IAppTokenService _appTokenService;
 
-        public AuthController(IAppTokenService appTokenService,
-            IUserService userService)
+        public AuthController(IAppTokenService appTokenService)
         {
             _appTokenService = appTokenService;
-            _userService = userService;
         }
 
         #endregion
 
         [HttpPost("token")]
-        public async Task<IActionResult> GetToken([FromBody]RequestTokenDto requestDto)
+        public async Task GetToken([FromBody]RequestTokenDto requestDto)
         {
-            var result = await _appTokenService.GenerateTokenAsync(requestDto);
-            if (!result.Result)
-                return BadRequest(result.Message);
-            return Ok(result.Token);
+            await _appTokenService.GenerateTokenAsync(requestDto);
         }
 
         [Authorize]
         [HttpGet("test")]
         public IActionResult Test()
         {
-            return Ok("123");
+            var user = HttpContext.User.Claims.Select(p => new { p.Type, p.Value });
+            return Ok(user);
         }
     }
 }

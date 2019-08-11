@@ -6,6 +6,6 @@ namespace Blog.Jwt.Service
 {
     public interface IAppTokenService
     {
-        Task<JwtTokenContext> GenerateTokenAsync(RequestTokenDto dto);
+        Task GenerateTokenAsync(RequestTokenDto dto);
     }
 }

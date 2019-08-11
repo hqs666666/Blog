@@ -65,3 +65,14 @@ create table `app_client`(
 `ClientSecret` varchar(32) not null,
 `ReturnUrl` varchar(1024) null
 );
+
+CREATE TABLE `log` (
+  `Id` int not null PRIMARY KEY AUTO_INCREMENT,
+  `Application` varchar(50) DEFAULT NULL,
+  `Logged` datetime DEFAULT NULL,
+  `Level` varchar(50) DEFAULT NULL,
+  `Message` varchar(512) DEFAULT NULL,
+  `Logger` varchar(250) DEFAULT NULL,
+  `Callsite` varchar(1024) DEFAULT NULL,
+  `Exception` text DEFAULT NULL
+)
