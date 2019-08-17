@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using Blog.ApiFramework.Middlewares;
 using Blog.Jwt.Extensions;
 using Blog.Repository;
 using Blog.Service;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -40,6 +45,23 @@ namespace Blog.WebApi
 
             #endregion
 
+            #region AutoMapper
+
+            services.AddAutoMapper(Assembly.Load("Blog.AutoMapperConfig"));
+
+            #endregion
+
+            #region Redis
+
+            var redisString = Configuration["Redis:ConnectionString"];
+            var csredis = new CSRedis.CSRedisClient(redisString);
+            //初始化 RedisHelper
+            RedisHelper.Initialization(csredis);
+            //注册mvc分布式缓存
+            services.AddSingleton<IDistributedCache>(new CSRedisCache(RedisHelper.Instance));
+
+            #endregion
+
             #region Dapper
 
             services.Configure<DbOption>(Configuration.GetSection("DbOption"));
@@ -47,18 +69,26 @@ namespace Blog.WebApi
 
             #endregion
 
-            #region Jwt
+            #region IdentityServer4
 
-            services.AddJwt(options =>
-            {
-                var secretKey = Configuration["JwtIssuerOptions:SecretKey"];
-                options.Issuer = Configuration["JwtIssuerOptions:Issuer"];
-                options.Audience = Configuration["JwtIssuerOptions:Audience"];
-                options.ExpireMinutes = int.Parse(Configuration["JwtIssuerOptions:ExpireMinutes"]);
-                options.ConnectionString = Configuration["DbOption:ConnectionString"];
-                options.SigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
-                options.Secret = Configuration["JwtIssuerOptions:SecretKey"];
-            });
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.ApiName = "testapi";
+                    options.RequireHttpsMetadata = false;
+                });
+
+            //services.AddJwt(options =>
+            //{
+            //    var secretKey = Configuration["JwtIssuerOptions:SecretKey"];
+            //    options.Issuer = Configuration["JwtIssuerOptions:Issuer"];
+            //    options.Audience = Configuration["JwtIssuerOptions:Audience"];
+            //    options.ExpireMinutes = int.Parse(Configuration["JwtIssuerOptions:ExpireMinutes"]);
+            //    options.ConnectionString = Configuration["DbOption:ConnectionString"];
+            //    options.SigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
+            //    options.Secret = Configuration["JwtIssuerOptions:SecretKey"];
+            //});
 
             #endregion
 
@@ -89,7 +119,8 @@ namespace Blog.WebApi
                 });
                 // Set the comments path for the Swagger JSON and UI.
                 var basePath = AppContext.BaseDirectory;
-                var xmlPath = Path.Combine(basePath, "Blog.WebApi.xml");
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(basePath, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
                 var security = new Dictionary<string, IEnumerable<string>> { { "Bearer", new string[] { } }, };

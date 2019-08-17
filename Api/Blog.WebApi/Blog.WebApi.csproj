@@ -14,6 +14,9 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.3" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Caching.CSRedis" Version="3.0.51" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="NLog" Version="4.5.7" />
@@ -24,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Application\Blog.Service\Blog.Service.csproj" />
     <ProjectReference Include="..\..\Entity\Blog.Dto\Blog.Dto.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Blog.AutoMapperConfig\Blog.AutoMapperConfig.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Blog.Jwt\Blog.Jwt.csproj" />
     <ProjectReference Include="..\Blog.ApiFramework\Blog.ApiFramework.csproj" />
   </ItemGroup>

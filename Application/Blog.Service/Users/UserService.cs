@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.Generic;
+using System.Security.Claims;
 using Blog.Entity.Users;
 using Blog.IRepository.Users;
 using Blog.IService.Users;
@@ -22,7 +24,17 @@ namespace Blog.Service.Users
 
         public User GetUser(string username, string password)
         {
-            return _userRepository.GetUser(username, password);
+            var user = _userRepository.GetUser(username, password);
+            user.Claims = new List<Claim>
+            {
+                new Claim("email","hqs@qq.com")
+            };
+            return user;
+        }
+
+        public bool VerifyUser(string username, string password)
+        {
+            return GetUser(username, password) != null;
         }
     }
 }

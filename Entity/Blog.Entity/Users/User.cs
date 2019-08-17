@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Claims;
 
 namespace Blog.Entity.Users
 {
@@ -13,5 +14,6 @@ namespace Blog.Entity.Users
         public string Email { get; set; }
         public int UserType { get; set; }
         public List<Role> Roles { get; set; }
+        public List<Claim> Claims { get; set; }
     }
 }

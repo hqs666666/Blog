@@ -1,0 +1,66 @@
+﻿@using IdentityServer4.Extensions
+@{
+    string name = null;
+    if (!true.Equals(ViewData["signed-out"]))
+    {
+        name = Context.User?.GetDisplayName();
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fast1804统一身份认证系统</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link href="~/css/site.css?v=111" rel="stylesheet" />
+    <link href="https://cdn.bootcss.com/element-ui/2.11.1/theme-chalk/index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="nav">
+        <el-menu :default-active="activeIndex"
+                 mode="horizontal"
+                 background-color="#545c64"
+                 text-color="#fff"
+                 active-text-color="#fff">
+            <el-menu-item index="1">Fast1804统一认证平台</el-menu-item>
+            @if (!string.IsNullOrEmpty(name))
+            {
+                <el-submenu class="nav-info" index="2">
+                    <template slot="title">
+                        @name
+                    </template>
+                    <el-menu-item index="2-1"><a href="/Account/Logout">注销</a></el-menu-item>
+                </el-submenu>
+            }
+            else
+            {
+                <el-menu-item class="nav-info" index="2"><a href="~/grants">登录</a></el-menu-item>
+            }
+        </el-menu>
+    </div>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/element-ui/2.11.1/index.js"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+        var app = new Vue({
+            el: "#nav",
+            data() {
+                return {
+                    activeIndex: '1',
+                };
+            },
+            methods: {
+                handleSelect(key, keyPath) {
+
+                }
+            }
+        });
+    </script>
+</body>
+</html>

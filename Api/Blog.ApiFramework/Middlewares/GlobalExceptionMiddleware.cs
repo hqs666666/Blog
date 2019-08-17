@@ -28,6 +28,8 @@ namespace Blog.ApiFramework.Middlewares
             catch (Exception ex)
             {
                 _logger.Log(LogLevel.Error, ex, ex.Message);
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await context.Response.WriteAsync(ex.Message);
             }
         }
     }

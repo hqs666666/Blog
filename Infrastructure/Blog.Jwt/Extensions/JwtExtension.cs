@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Blog.Jwt.AuthHelper.Authentication;
 using Blog.Jwt.Builder;
 using Blog.Jwt.Service;
@@ -59,7 +60,15 @@ namespace Blog.Jwt.Extensions
             var jwtAppSettingOptions = new JwtIssuerOptions();
             builder.Services.AddSingleton(jwtAppSettingOptions);
             jwtOptionsAction?.Invoke(jwtAppSettingOptions);
+
+            builder.AddJwtBearer(options =>
+            {
+                var jwtEvent = new JwtEventEx();
+                options.Events = jwtEvent.JwtEvent();
+            });
         }
+
+        
 
         public static IJwtBuilder AddUserValidation<T>(this IJwtBuilder builder) where T : class, IUserValidatorService
         {
@@ -70,6 +79,27 @@ namespace Blog.Jwt.Extensions
         public static IJwtBuilder AddIdentityServerBuilder(this IServiceCollection services)
         {
             return new JwtBuilder(services);
+        }
+    }
+
+    public class JwtEventEx
+    {
+        static readonly Func<HttpRequest, string> InternalTokenRetriever = request => request.HttpContext.Items[""] as string;
+        internal JwtBearerEvents JwtEvent()
+        {
+            var bearer = new JwtBearerEvents();
+            return new JwtBearerEvents()
+            {
+
+                OnMessageReceived = e =>
+                {
+                    e.Token = InternalTokenRetriever(e.Request);
+                    return bearer.MessageReceived(e);
+                },
+                OnTokenValidated = e => bearer.TokenValidated(e),
+                OnAuthenticationFailed = e => bearer.AuthenticationFailed(e),
+                OnChallenge = e => bearer.Challenge(e)
+            };
         }
     }
 }

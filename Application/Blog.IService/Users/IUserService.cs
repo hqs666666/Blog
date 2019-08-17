@@ -8,5 +8,6 @@ namespace Blog.IService.Users
     {
         User GetUser(string id);
         User GetUser(string username, string password);
+        bool VerifyUser(string username, string password);
     }
 }
