@@ -1,61 +1,114 @@
 @model AuthorizationCenter.Models.Account.LoginViewModel
+@{
+    ViewBag.Title = "Login";
+}
 
-<div class="login-page">
-    <div class="page-header">
-        <h1>统一身份认证系统</h1>
+<style>
+    #login {
+        width: 100%;
+        background: #f0f2f5 url(/images/background.svg) no-repeat 50%;
+        position: fixed;
+        top: 60px;
+        bottom: 0;
+        padding: 110px 0 144px;
+    }
+    .box {
+        width: 368px;
+        margin: auto;
+    }
+    .el-form-item__content {
+        margin-left: 0 !important; 
+    }
+
+    .title {
+        text-align: center;
+        font-size: 24px;
+    }
+    .summary {
+        text-align: center;
+        font-size: 14px;
+        margin: 10px 0 80px 0;
+    }
+    .forget {
+        float: right;
+        color: #1890ff;
+        cursor: pointer;
+    }
+    .footer {
+        width: 100%;
+        text-align: center;
+        position: fixed;
+        bottom: 25px;
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 14px;
+    }
+</style>
+
+<div id="login">
+    <div class="box">
+        <div class="title">Fast1804登录系统</div>
+        <div class="summary">这是一段文字</div>
+
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" method="POST" action="/Account/Login">
+            <el-form-item prop="Username">
+                <el-input v-model="ruleForm.Username" name="Username" placeholder="用户名"  prefix-icon="el-icon-search"></el-input>
+            </el-form-item>
+            <el-form-item prop="Password">
+                <el-input type="password" v-model="ruleForm.Password" name="Password" autocomplete="off" placeholder="密码"  prefix-icon="el-icon-search"></el-input>
+            </el-form-item>
+            
+            <el-form-item prop="RememberLogin">
+                <el-checkbox v-model="ruleForm.RememberLogin">自动登录</el-checkbox>
+                <span class="forget">忘记密码</span>
+                <input v-model="ruleForm.RememberLogin" name="RememberLogin" type="hidden"/>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" size="medium" style="width: 100%" @@click="submitForm('ruleForm')">登录</el-button>
+            </el-form-item>
+        </el-form>
     </div>
-
-    <partial name="_ValidationSummary" />
-
-    <div class="row">
-
-        @if (Model.EnableLocalLogin)
-        {
-            <div class="col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">登录</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <form asp-route="Login">
-                            <input type="hidden" asp-for="ReturnUrl" />
-
-                            <fieldset>
-                                <div class="form-group">
-                                    <label for="Username">用户名</label>
-                                    <input class="form-control" placeholder="请输入用户名" id="Username" name="Username" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <label for="Password">密码</label>
-                                    <input type="password" class="form-control" placeholder="请输入密码" id="Password" name="Password" autocomplete="off">
-                                </div>
-                                @if (Model.AllowRememberLogin)
-                                {
-                                    <div class="form-group login-remember">
-                                        <label asp-for="RememberLogin">
-                                            <input asp-for="RememberLogin">
-                                            <strong>记住我</strong>
-                                        </label>
-                                    </div>
-                                }
-                                <div class="form-group">
-                                    <button class="btn btn-primary" name="button" value="login">登录</button>
-                                    <button class="btn btn-default" name="button" value="cancel">取消</button>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
-        {
-            <div class="alert alert-warning">
-                <strong>Invalid login request</strong>
-                There are no login schemes configured for this client.
-            </div>
-        }
+    <div class="footer">
+        Copyright © 2019-2022 Designed by hqs 鄂ICP备 19016382号
     </div>
 </div>
+
+@section scripts
+{
+    <script>
+        var app = new Vue({
+            el: "#login",
+            data() {
+                return {
+                    ruleForm: {
+                        Username: '',
+                        Password: '',
+                        RememberLogin: false
+                    },
+                    rules: {
+                        Username: [
+                            { required: true, message: '请输入用户名', trigger: 'blur' },
+                            { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+                        ],
+                        Password: [
+                            { required: true, message: '密码', trigger: 'blur' },
+                            { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+                        ]
+                    }
+                };
+            },
+            methods: {
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            var form = document.querySelector('form');
+                            form.submit();
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

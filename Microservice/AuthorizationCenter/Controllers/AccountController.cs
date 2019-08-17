@@ -66,12 +66,13 @@ namespace AuthorizationCenter.Controllers
         /// Handle postback from username/password login
         /// </summary>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginInputModel model, string button)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginInputModel model)
         {
             // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
+            var button = "login"; //将参数中的button暂时写死，此处效率提升100%
             // the user clicked the "cancel" button
             if (button != "login")
             {
@@ -185,7 +186,7 @@ namespace AuthorizationCenter.Controllers
         /// Handle logout page postback
         /// </summary>
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout(LogoutInputModel model)
         {
             // build a model so the logged out page knows what to display
@@ -211,6 +212,9 @@ namespace AuthorizationCenter.Controllers
                 // this triggers a redirect to the external provider for sign-out
                 return SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);
             }
+
+            if (!string.IsNullOrEmpty(vm.PostLogoutRedirectUri))
+                return Redirect(vm.PostLogoutRedirectUri);
 
             return View("LoggedOut", vm);
         }
