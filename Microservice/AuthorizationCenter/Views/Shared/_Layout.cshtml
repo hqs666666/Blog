@@ -13,9 +13,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title</title>
-    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
-    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
-    <link href="~/css/site.css?v=111" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico?v=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico?v=1" />
+    <link href="~/css/site.css?v=1111" rel="stylesheet" />
     <link href="https://cdn.bootcss.com/element-ui/2.11.1/theme-chalk/index.css" rel="stylesheet">
 </head>
 <body>
@@ -25,9 +25,13 @@
                  background-color="#545c64"
                  text-color="#fff"
                  active-text-color="#fff">
-            <el-menu-item index="1" @@click="returnHome">Fast1804统一认证平台</el-menu-item>
+            <el-menu-item index="1" @@click="returnHome">
+                <img src="~/images/iron_man.png" width="45" />
+                Fast1804统一认证平台
+            </el-menu-item>
             <el-submenu v-if="name !== ''" class="nav-info" index="2">
                 <template slot="title">
+                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                     @name
                 </template>
                 <el-menu-item index="2-1" @@click="logout">注销</el-menu-item>
@@ -38,6 +42,7 @@
     <div class="container">
         @RenderBody()
     </div>
+
     <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
     <script src="https://cdn.bootcss.com/element-ui/2.11.1/index.js"></script>
     @RenderSection("scripts", required: false)

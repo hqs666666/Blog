@@ -18,12 +18,12 @@
         <strong>@Model.DisplayName</strong>
         @if (Model.Emphasize)
         {
-            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            <i class="el-icon-place"></i>
         }
     </label>
     @if (Model.Required)
     {
-        <span><em>(required)</em></span>
+        <span style="font-size: 14px"><em>(required)</em></span>
     }
     @if (Model.Description != null)
     {

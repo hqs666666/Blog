@@ -6,7 +6,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Blog.ApiFramework.Middlewares;
-using Blog.Jwt.Extensions;
 using Blog.Repository;
 using Blog.Service;
 using IdentityServer4.AccessTokenValidation;
@@ -18,7 +17,6 @@ using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using NLog.Extensions.Logging;
 using NLog.Web;
 

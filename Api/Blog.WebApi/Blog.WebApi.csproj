@@ -28,7 +28,6 @@
     <ProjectReference Include="..\..\Application\Blog.Service\Blog.Service.csproj" />
     <ProjectReference Include="..\..\Entity\Blog.Dto\Blog.Dto.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Blog.AutoMapperConfig\Blog.AutoMapperConfig.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Blog.Jwt\Blog.Jwt.csproj" />
     <ProjectReference Include="..\Blog.ApiFramework\Blog.ApiFramework.csproj" />
   </ItemGroup>
 

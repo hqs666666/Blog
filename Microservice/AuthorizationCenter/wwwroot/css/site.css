@@ -21,3 +21,8 @@ a {
 .nav-info {
     float: right !important;
 }
+
+#error_msg li {
+    color: red;
+    font-size: 14px;
+}

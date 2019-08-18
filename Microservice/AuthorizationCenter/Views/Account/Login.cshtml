@@ -12,28 +12,33 @@
         bottom: 0;
         padding: 110px 0 144px;
     }
+
     .box {
         width: 368px;
         margin: auto;
     }
+
     .el-form-item__content {
-        margin-left: 0 !important; 
+        margin-left: 0 !important;
     }
 
     .title {
         text-align: center;
         font-size: 24px;
     }
+
     .summary {
         text-align: center;
         font-size: 14px;
         margin: 10px 0 80px 0;
     }
+
     .forget {
         float: right;
         color: #1890ff;
         cursor: pointer;
     }
+
     .footer {
         width: 100%;
         text-align: center;
@@ -49,18 +54,20 @@
         <div class="title">Fast1804登录系统</div>
         <div class="summary">这是一段文字</div>
 
+        <partial name="_ValidationSummary" />
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" method="POST" action="/Account/Login">
             <el-form-item prop="Username">
-                <el-input v-model="ruleForm.Username" name="Username" placeholder="用户名"  prefix-icon="el-icon-search"></el-input>
+                <el-input v-model="ruleForm.Username" name="Username" placeholder="用户名" prefix-icon="el-icon-user"></el-input>
             </el-form-item>
             <el-form-item prop="Password">
-                <el-input type="password" v-model="ruleForm.Password" name="Password" autocomplete="off" placeholder="密码"  prefix-icon="el-icon-search"></el-input>
+                <el-input type="password" v-model="ruleForm.Password" name="Password" autocomplete="off" placeholder="密码" prefix-icon="el-icon-key"></el-input>
             </el-form-item>
-            
+
             <el-form-item prop="RememberLogin">
                 <el-checkbox v-model="ruleForm.RememberLogin">自动登录</el-checkbox>
                 <span class="forget">忘记密码</span>
-                <input v-model="ruleForm.RememberLogin" name="RememberLogin" type="hidden"/>
+                <input v-model="ruleForm.RememberLogin" name="RememberLogin" type="hidden" />
+                <input name="ReturnUrl" value="@Model.ReturnUrl" type="hidden" />
             </el-form-item>
 
             <el-form-item>
@@ -74,7 +81,7 @@
 </div>
 
 @section scripts
-{
+    {
     <script>
         var app = new Vue({
             el: "#login",
@@ -83,7 +90,7 @@
                     ruleForm: {
                         Username: '',
                         Password: '',
-                        RememberLogin: false
+                        RememberLogin: false,
                     },
                     rules: {
                         Username: [

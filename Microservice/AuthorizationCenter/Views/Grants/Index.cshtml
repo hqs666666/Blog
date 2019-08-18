@@ -1,79 +1,124 @@
-﻿@model AuthorizationCenter.Models.Grant.GrantsViewModel
+﻿@{
+    ViewBag.Title = "授权记录";
+}
 
-<div class="grants">
-    <div class="row page-header">
-        <div class="col-sm-10">
-            <h1>
-                客户端应用访问
-            </h1>
-            <div>以下是您可以访问的应用程序列表以及其有权访问的资源</div>
-        </div>
-    </div>
+<style>
+    #grant {
+        width: 65%;
+        margin: 0 auto;
+        padding: 40px 0;
+    }
 
-    @if (Model.Grants.Any() == false)
-    {
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="alert alert-info">
-                    您尚未授权访问任何应用程序
-                </div>
-            </div>
-        </div>
+    .title {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 24px;
     }
-    else
-    {
-        foreach (var grant in Model.Grants)
-        {
-            <div class="row grant">
-                <div class="col-sm-2">
-                    @if (grant.ClientLogoUrl != null)
-                    {
-                        <img src="@grant.ClientLogoUrl">
-                    }
-                </div>
-                <div class="col-sm-8">
-                    <div class="clientname">@grant.ClientName</div>
-                    <div>
-                        <span class="created">创建时间:</span> @grant.Created.ToString("yyyy-MM-dd")
-                    </div>
-                    @if (grant.Expires.HasValue)
-                    {
-                        <div>
-                            <span class="expires">过期时间:</span> @grant.Expires.Value.ToString("yyyy-MM-dd")
-                        </div>
-                    }
-                    @if (grant.IdentityGrantNames.Any())
-                    {
-                        <div>
-                            <div class="granttype">身份授权</div>
-                            <ul>
-                                @foreach (var name in grant.IdentityGrantNames)
-                        {
-                                    <li>@name</li>
-                                }
-                            </ul>
-                        </div>
-                    }
-                    @if (grant.ApiGrantNames.Any())
-                    {
-                        <div>
-                            <div class="granttype">API授权</div>
-                            <ul>
-                                @foreach (var name in grant.ApiGrantNames)
-                                {
-                                    <li>@name</li>
-                                }
-                            </ul>
-                        </div>
-                    }
-                </div>
-                <div class="col-sm-2">
-                    <form asp-action="Revoke">
-                        <input type="hidden" name="clientId" value="@grant.ClientId">
-                        <button class="btn btn-danger">撤消访问权限</button>
-                    </form>
-                </div>
-            </div>
-        }
-    }
+</style>
+
+<div id="grant">
+    <div class="title">客户端应用访问记录</div>
+    <el-table :data="tableData"
+              border
+              style="width: 100%">
+        <el-table-column prop="ClientId"
+                         label="客户端Id"
+                         width="180">
+        </el-table-column>
+        <el-table-column prop="ClientName"
+                         label="客户端名称"
+                         width="180">
+        </el-table-column>
+        <el-table-column prop="Created"
+                         label="授权时间">
+        </el-table-column>
+        <el-table-column prop="Expires"
+                         label="过期时间">
+        </el-table-column>
+        <el-table-column prop="IdentityGrantNames"
+                         label="身份授权">
+        </el-table-column>
+        <el-table-column prop="ApiGrantNames"
+                         label="API授权">
+        </el-table-column>
+        <el-table-column fixed="right"
+                         label="操作"
+                         width="100">
+            <template slot-scope="scope">
+                <el-button @@click="handleClick(scope.row)" type="text" size="small">撤销访问权限</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
 </div>
+
+@section scripts
+    {
+    <script>
+        var app = new Vue({
+            el: "#grant",
+            data() {
+                return {
+                    tableData: []
+                }
+            },
+            created() {
+                this.getData();
+            },
+            methods: {
+                handleClick(row) {
+                    this.$confirm('此操作将永久删除该记录, 是否继续?',
+                        '提示',
+                        {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            fetch('/Grants/Revoke?clientId=' + row.ClientId,
+                                {
+                                    method: 'POST'
+                                }).then(response => response.json())
+                                .then(data => {
+                                    if (data.result) {
+                                        this.getData();
+                                        this.$notify({
+                                            title: '成功',
+                                            message: '删除成功',
+                                            type: 'success'
+                                        });
+                                    } else {
+                                        this.$notify.error({
+                                            title: '错误',
+                                            message: data.message
+                                        });
+                                    }
+                                });
+                        }).catch
+                        (() => {
+                            this.$notify.error({
+                                title: '错误',
+                                message: '删除失败'
+                            });
+                        });
+                },
+                getData() {
+                    this.tableData = [];
+                    fetch('/Grants/GetGrantData')
+                        .then(response => response.json())
+                        .then(data => {
+                            for (var i = 0; i < data.length; i++) {
+                                var json = {
+                                    ClientId: data[i].clientId,
+                                    ClientName: data[i].clientName,
+                                    Created: data[i].created,
+                                    Expires: data[i].expires,
+                                    IdentityGrantNames: data[i].identityGrantNames.join(),
+                                    ApiGrantNames: data[i].apiGrantNames.join()
+                                }
+                                this.tableData.push(json);
+                            }
+                        });
+                }
+            }
+        });
+    </script>
+}

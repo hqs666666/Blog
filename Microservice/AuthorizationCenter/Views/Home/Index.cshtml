@@ -1,6 +1,6 @@
-@{
+﻿@{
     var version = typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.GetName().Version.ToString();
-    ViewBag.Title = "Index";
+    ViewBag.Title = "首页";
 }
 
 <style>
@@ -15,6 +15,11 @@
     .el-carousel__item:nth-child(2n+1) {
         background-color: #d3dce6;
     }
+
+    .description {
+        max-width: 965px;
+        margin:20px auto;
+    }
 </style>
 
 <div id="home-index">
@@ -23,6 +28,28 @@
             <img :src="item" />
         </el-carousel-item>
     </el-carousel>
+    <div class="description">
+        <p>
+            <el-tag>授权 IdentityServer4</el-tag>
+            <el-tag>授权信息 Mongodb</el-tag>
+            <el-tag>系统数据 Mysql</el-tag>
+            <el-tag>缓存 Redis</el-tag>
+            <el-tag>数据库访问 Dapper</el-tag>
+            <el-tag>映射 AutoMapper</el-tag>
+            <el-tag>注入 Autofac</el-tag>
+        </p>
+        <p>
+            <el-tag>日志 NLog</el-tag>
+            <el-tag>文档 Swagger</el-tag>
+        </p>
+        <p>
+            <el-tag>http://api.hqs.pub</el-tag>
+            <el-tag>http://manage.hqs.pub</el-tag>
+            <el-tag>http://account.hqs.pub</el-tag>
+            <el-tag>http://www.hqs.pub</el-tag>
+            <el-tag>http://price.hqs.pub</el-tag>
+        </p>
+    </div>
 </div>
 
 @section scripts

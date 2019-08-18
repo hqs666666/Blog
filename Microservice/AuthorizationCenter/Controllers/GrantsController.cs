@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,25 +42,31 @@ namespace AuthorizationCenter.Controllers
         /// Show list of grants
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View("Index", await BuildViewModelAsync());
+            return View("Index");
         }
 
         /// <summary>
         /// Handle postback to revoke a client
         /// </summary>
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Revoke(string clientId)
         {
-            await _interaction.RevokeUserConsentAsync(clientId);
-            await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
-
-            return RedirectToAction("Index");
+            try
+            {
+                await _interaction.RevokeUserConsentAsync(clientId);
+                await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
+                return Json(new {result = true});
+            }
+            catch (Exception ex)
+            {
+                return Json(new {result = false, message = ex.Message});
+            }
         }
 
-        private async Task<GrantsViewModel> BuildViewModelAsync()
+        [HttpGet]
+        public async Task<IActionResult> GetGrantData()
         {
             var grants = await _interaction.GetAllUserConsentsAsync();
 
@@ -86,11 +93,7 @@ namespace AuthorizationCenter.Controllers
                     list.Add(item);
                 }
             }
-
-            return new GrantsViewModel
-            {
-                Grants = list
-            };
+            return Json(list);
         }
     }
 }

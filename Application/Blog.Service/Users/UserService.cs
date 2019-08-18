@@ -19,15 +19,18 @@ namespace Blog.Service.Users
 
         public User GetUser(string id)
         {
-           return _userRepository.GetUser(id);
+            return _userRepository.GetUser(id);
         }
 
         public User GetUser(string username, string password)
         {
             var user = _userRepository.GetUser(username, password);
+            if (user == null) return null;
+
             user.Claims = new List<Claim>
             {
-                new Claim("email","hqs@qq.com")
+                new Claim("email",user.Email),
+                new Claim("name",user.Name),
             };
             return user;
         }
