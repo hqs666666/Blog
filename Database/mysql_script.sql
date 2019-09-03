@@ -118,3 +118,16 @@ CREATE TABLE `app_code` (
   `Remarks` varchar(256)
 )
 
+CREATE TABLE `article` (
+  `Id` varchar(32) not null PRIMARY KEY,
+  `CreateTime` DATETIME NOT NULL,
+  `CreateBy` varchar(32) not null,
+  `ModifyTime` DATETIME NOT NULL,
+  `ModifyBy` varchar(32) not null,
+  `Deleted` int not null default 0,
+  `Published` int not null default 0,
+  `AuthorId` varchar(32) not null,
+  `Contents` text not null,
+  `ExtLink` varchar(1024)
+)
+
