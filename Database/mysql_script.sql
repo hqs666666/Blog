@@ -76,3 +76,45 @@ CREATE TABLE `log` (
   `Callsite` varchar(1024) DEFAULT NULL,
   `Exception` text DEFAULT NULL
 )
+
+CREATE TABLE `module` (
+  `Id` varchar(32) not null PRIMARY KEY,
+  `CreateTime` DATETIME NOT NULL,
+  `CreateBy` varchar(32) not null,
+  `ModifyTime` DATETIME NOT NULL,
+  `ModifyBy` varchar(32) not null,
+  `ModuleClassId` varchar(32) not null comment "父级模块",
+  `SortIndex` int not null,
+  `IsNavigation` int not null default 1 comment "是否显示",
+  `Code` varhcar(50) not null comment "模块码",
+  `Name` varhcar(100) not null comment "显示名称",
+  `ActionCodes` varchar(200) not null comment "操作",
+  `EntryUrl` varchar(300) not null comment "Link"
+)
+
+CREATE TABLE `role_module` (
+  `Id` varchar(32) not null PRIMARY KEY,
+  `CreateTime` DATETIME NOT NULL,
+  `CreateBy` varchar(32) not null,
+  `ModifyTime` DATETIME NOT NULL,
+  `ModifyBy` varchar(32) not null,
+  `RoleId` varchar(32) not null,
+  `ModuleCode` varhcar(50) not null comment "模块码",
+  `ActionCodes` varchar(200) not null comment "操作",
+)
+
+CREATE TABLE `app_code` (
+  `Id` varchar(32) not null PRIMARY KEY,
+  `CreateTime` DATETIME NOT NULL,
+  `CreateBy` varchar(32) not null,
+  `ModifyTime` DATETIME NOT NULL,
+  `ModifyBy` varchar(32) not null,
+  `CodeType` varchar(50) not null,
+  `CodeOrder` int not null,
+  `ParentCode` int not null,
+  `CodeKey` varchar(100) not null,
+  `CodeValue` varhcar(256) not null,
+  `ExtValue` varchar(256),
+  `Remarks` varchar(256)
+)
+
