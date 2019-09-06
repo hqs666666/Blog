@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entity", "Entity", "{C4615D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{3661173E-3ABF-4796-BA43-5E638ED63033}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservice", "Microservice", "{D7F623F6-1F96-40CA-ABEA-AB3CE4C92E8D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository", "Repository", "{40265814-BAA2-4DAA-A845-9244277DB8E2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{4B89FB1D-AF69-434A-B9C7-D9A2BE88D829}"
@@ -36,8 +34,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.ApiFramework", "Api\Blog.ApiFramework\Blog.ApiFramework.csproj", "{0625F051-D472-4945-A8FF-5BFB3EF998DB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Jwt", "Infrastructure\Blog.Jwt\Blog.Jwt.csproj", "{966690F3-5B40-403F-B237-259774A8A7EA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorizationCenter", "Microservice\AuthorizationCenter\AuthorizationCenter.csproj", "{B0DFCB68-B41D-4AA5-8577-63D0F3B806DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,10 +85,6 @@ Global
 		{966690F3-5B40-403F-B237-259774A8A7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{966690F3-5B40-403F-B237-259774A8A7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{966690F3-5B40-403F-B237-259774A8A7EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0DFCB68-B41D-4AA5-8577-63D0F3B806DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0DFCB68-B41D-4AA5-8577-63D0F3B806DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0DFCB68-B41D-4AA5-8577-63D0F3B806DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0DFCB68-B41D-4AA5-8577-63D0F3B806DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,7 +101,6 @@ Global
 		{8AD9D817-ACAF-4E6F-BBC1-64AA1804B04C} = {4B89FB1D-AF69-434A-B9C7-D9A2BE88D829}
 		{0625F051-D472-4945-A8FF-5BFB3EF998DB} = {4B89FB1D-AF69-434A-B9C7-D9A2BE88D829}
 		{966690F3-5B40-403F-B237-259774A8A7EA} = {3661173E-3ABF-4796-BA43-5E638ED63033}
-		{B0DFCB68-B41D-4AA5-8577-63D0F3B806DF} = {D7F623F6-1F96-40CA-ABEA-AB3CE4C92E8D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDBF20A7-7BC6-467A-83EF-3AE56F67EC12}

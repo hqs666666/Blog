@@ -31,6 +31,7 @@ namespace Blog.Service.Users
             {
                 new Claim("email",user.Email),
                 new Claim("name",user.Name),
+                new Claim("role","admin")
             };
             return user;
         }

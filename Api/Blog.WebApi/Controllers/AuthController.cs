@@ -8,9 +8,9 @@ namespace Blog.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthController : ApiBaseController
     {
-        [Authorize]
         [HttpGet("test")]
         public IActionResult Test()
         {

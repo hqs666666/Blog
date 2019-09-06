@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using NLog;
@@ -29,6 +31,7 @@ namespace Blog.ApiFramework.Middlewares
             {
                 _logger.Log(LogLevel.Error, ex, ex.Message);
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.Body = new MemoryStream(Encoding.UTF8.GetBytes(ex.Message));
                 await context.Response.WriteAsync(ex.Message);
             }
         }

@@ -13,8 +13,6 @@ namespace Blog.WebApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseKestrel()
-                .UseUrls("http://*:5001")
                 .UseNLog()
                 .UseStartup<Startup>();
     }
