@@ -1,7 +1,7 @@
 ﻿
 using Blog.Dto;
 using Blog.IService;
-
+ 
 namespace Blog.Service
 {
     public class BaseService : IBaseService
